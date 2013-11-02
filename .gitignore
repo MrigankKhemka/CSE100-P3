@@ -11,3 +11,16 @@
 *.lai
 *.la
 *.a
+
+#Ignore editor generated files
+*.swp
+*.swn
+*.swo
+*.gch*
+*~
+
+#Ignore student created binaries
+a.out
+
+#Ignore Merge Conflict NFS file creation
+*.nfs*
