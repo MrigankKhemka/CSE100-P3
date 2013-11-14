@@ -53,13 +53,19 @@ int main(int argc, char** argv) {
     outfile.open(argv[2]);
     if(outfile.is_open()) {
       for(int i=0;i<freqs.size();i++) {
-        //outfile << freqs[i];
+        outfile << freqs[i] << " ";
       }
-      for(int j = 0; j < freqs.size(); j++)  {
-        if(freqs[j] > 0) {
-          huffman.encode(j,outfile);
-        }
+      outfile << "\n";
+    }
+    infile.open(argv[1]);
+    while(1) {
+      if (infile.is_open()) {
+        nextChar = (char)infile.get();
+        if(infile.eof()) break;
+        if(!infile.good()) break;
+        huffman.encode(nextChar, outfile);
       }
     }
+    outfile.close();
   }
 }

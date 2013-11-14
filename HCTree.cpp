@@ -35,7 +35,7 @@ void HCTree::build(const vector<int>& freqs)
     p2->p = parent;
     //Add the new node back into the priority queue
     pq.push(parent);
- } 
+  } 
   if(pq.size() == 1) {
     root = pq.top();
   }
@@ -58,11 +58,28 @@ void HCTree::encode(byte symbol, ofstream& out) const
     }
     curr = curr->p;
   }
-  
-  while(treeHolder.size() != 0) {
+  if(treeHolder.size() != 0) {
     out << treeHolder.top();
     treeHolder.pop();
   }
 
+}
+
+
+int HCTree::decode(ifstream& in) const 
+{
+  HCNode* curr = root;
+  int num;
+  while(curr->c0 != 0 && curr->c1 !=0)
+  {
+    in >> num; 
+    if(num == 0) {
+      curr = curr->c0;
+    }
+    else if(num == 1) {
+      curr = curr->c1;
+    }
+  } 
+  return curr->symbol;
 }
 
