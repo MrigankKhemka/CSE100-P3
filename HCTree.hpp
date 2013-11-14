@@ -1,6 +1,7 @@
 #ifndef HCTREE_HPP
 #define HCTREE_HPP
 
+#include <stack>
 #include <queue>
 #include <vector>
 #include <fstream>
