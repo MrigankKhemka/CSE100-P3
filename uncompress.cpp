@@ -21,11 +21,12 @@ int main(int argc, char** argv) {
     cout << "Reading from file header: " << argv[1] << "... ";
     //while(1) {
       if (infile.is_open() && infile.good()) {
-        infile >> frequency;
         //if(infile.eof()) break;
         //if(!infile.good()) break;
         for(int i = 0; i < freqs.size(); i++) {
+          infile >> frequency;
           freqs[i] = frequency;
+          if(frequency > 0) symbols++;
         }
             //cout << "i" << i << endl;
             //cout << "freqs" <<freqs[i] << endl;

@@ -70,9 +70,10 @@ int HCTree::decode(ifstream& in) const
 {
   HCNode* curr = root;
   int num;
-  while(curr->c0 != 0 && curr->c1 !=0)
+  while(curr != 0)
   {
     in >> num; 
+    cout << num;
     if(num == 0) {
       curr = curr->c0;
     }
