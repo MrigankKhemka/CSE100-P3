@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
   if(argc == 3) {
     ifstream infile;
     ofstream outfile;    
-    infile.open(argv[1]);
+    infile.open(argv[1], ios::binary);
     int frequency;
     int totalFreq = 0;
     int symbols = 0;
@@ -43,10 +43,11 @@ int main(int argc, char** argv) {
     cout << "Building huff" << endl;
     huffman.build(freqs); 
     cout << "Done" << endl;
-    outfile.open(argv[2]);
+    outfile.open(argv[2], ios::binary);
+    BitInputStream bitInput = BitInputStream(infile);
     if (infile.is_open() && infile.good()) {
       for(int i = 0; i < totalFreq; i++) {
-        outfile << (char)huffman.decode(infile);
+        outfile << (char)huffman.decode(bitInput);
       }
     }
     outfile.close();

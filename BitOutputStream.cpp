@@ -8,13 +8,12 @@ void BitOutputStream::flush() {
 
 void BitOutputStream::writeBit(int i) {
   //Flush if bit buffer is full
-  if(buf == 8) {
+  if(nbits == 8) {
     flush();
   }
   //Write the least significant bit of i into the buffer
   //at the current index
   buf |= i << nbits;
-  
   //Increment index
   nbits++;
   

@@ -10,9 +10,9 @@ void HCTree::build(const vector<int>& freqs)
   //Ordering the nodes by counts using a priority queue
   for(int i=0; i < 256; i++) {
     if (freqs[i] > 0) {
-      HCNode* p = new HCNode(freqs[i],i);
-      leaves[i] = p;
-      pq.push(p);
+      HCNode* nodep = new HCNode(freqs[i],i);
+      leaves[i] = nodep;
+      pq.push(nodep);
     } 
   }
   
@@ -28,8 +28,6 @@ void HCTree::build(const vector<int>& freqs)
     //Compute priority of parent
     int total = p1->count + p2->count;
     HCNode* parent = new HCNode(total,0,p1,p2);
-    //Set priority of new parent node to sum of priority of children
-    parent->count = total;
     //Set the 2 highest priorities as the children of the new node
     p1->p = parent;
     p2->p = parent;
@@ -43,6 +41,54 @@ void HCTree::build(const vector<int>& freqs)
 
 }
  
+void HCTree::encode(byte symbol, BitOutputStream& out) const
+{ 
+  //Set current to point to the leaf containing the symbol
+  HCNode* curr = leaves[symbol];  
+  stack<int> treeHolder;  
+  //Create stack, storing the code sequence backwards
+  //Traverse up the tree from the leaf
+  while(curr != root) {
+    //"0" pathway if current node is left child
+    if(curr == curr->p->c0) {
+      treeHolder.push(0);
+    }
+    //"1" pathway if current node is right child
+    else {
+      treeHolder.push(1);
+    }
+    //Set current node to parent node
+    curr = curr->p;
+  }
+
+  //Loop through stack and store into buffer
+  while(treeHolder.size() != 0) {
+    out.writeBit(treeHolder.top());
+    treeHolder.pop();
+  }
+}
+
+int HCTree::decode(BitInputStream& in) const 
+{
+  HCNode* curr = root;
+  int num;
+  while(curr->c1 != 0 || curr->c0 != 0)
+  {
+    num = in.readBit(); 
+    if(num == 0) {
+      curr = curr->c0;
+    }
+    else if(num == 1) {
+      curr = curr->c1;
+    }
+  }
+  return (int)curr->symbol;
+}
+
+
+
+/* Checkpoint methods
+
 void HCTree::encode(byte symbol, ofstream& out) const
 {
   //Set current to point to the leaf containing the symbol
@@ -83,4 +129,4 @@ int HCTree::decode(ifstream& in) const
   }
   return (int)curr->symbol;
 }
-
+*/
