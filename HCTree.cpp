@@ -1,8 +1,25 @@
+//------------------------------------------------
+// Filename: HCTree.cpp
+// Author: Jimmy Li
+// Date: 11/19/2013
+// Rev-Date: 11/19/2013
+//
+// Description: Huffman tree class 
+//
+//-------------------------------------------------
+
 #include "HCTree.hpp"
 
 HCTree:: ~HCTree()
 {
 }
+
+//------------------------------------------------------------------
+// build(const vector<int>& freqs): Constructs a huffman tree 
+//
+// Input: const vector<int>& freqs
+// Output: <none>
+//-------------------------------------------------------------------
 
 void HCTree::build(const vector<int>& freqs)
 {
@@ -34,13 +51,20 @@ void HCTree::build(const vector<int>& freqs)
     //Add the new node back into the priority queue
     pq.push(parent);
   } 
+  //The remaining node in the queue will be set as root
   if(pq.size() == 1) {
     root = pq.top();
   }
 
 
 }
- 
+ //------------------------------------------------------------------
+// encode(byte symbol, BitOutputStream& out) const: Encodes bit by bit
+//
+// Input: byte symbol, BitOutputStream& out
+// Output: <none>
+//-------------------------------------------------------------------
+
 void HCTree::encode(byte symbol, BitOutputStream& out) const
 { 
   //Set current to point to the leaf containing the symbol
@@ -68,26 +92,45 @@ void HCTree::encode(byte symbol, BitOutputStream& out) const
   }
 }
 
+//------------------------------------------------------------------
+// decode(BitInputStream& in) const: Decodes bit by bit
+//
+// Input:BitInputStream& in 
+// Output:int 
+//-------------------------------------------------------------------
+
 int HCTree::decode(BitInputStream& in) const 
 {
+  //Start traversal at root
   HCNode* curr = root;
   int num;
+  //Traverse down to leaf
   while(curr->c1 != 0 || curr->c0 != 0)
   {
-    num = in.readBit(); 
+    //Read bit by bit
+    num = in.readBit();
+    //Traverse left child if 0 
     if(num == 0) {
       curr = curr->c0;
     }
+    //Traverse right child if 1
     else if(num == 1) {
       curr = curr->c1;
     }
   }
+  //Return int representation of the symbol in the leaf
   return (int)curr->symbol;
 }
 
 
+//------------------------------------------------------------------
+// encode(byte symbol, ofstream& out) const: Checkpoint encode method
+//
+// Input: byte symbol, ofstream& out
+// Output: <none>
+//-------------------------------------------------------------------
 
-/* Checkpoint methods
+/* 
 
 void HCTree::encode(byte symbol, ofstream& out) const
 {
@@ -111,6 +154,13 @@ void HCTree::encode(byte symbol, ofstream& out) const
 
 }
 
+
+//------------------------------------------------------------------
+// decode(ifstream& in) const: Checkpoint decode method
+//
+// Input:ifstream& in 
+// Output:int 
+//-------------------------------------------------------------------
 
 int HCTree::decode(ifstream& in) const 
 {

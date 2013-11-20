@@ -1,3 +1,13 @@
+//------------------------------------------------
+// Filename: HCTree.hpp
+// Author: Jimmy Li
+// Date: 11/19/2013
+// Rev-Date: 11/19/2013
+//
+// Description: Huffman tree interface 
+//
+//-------------------------------------------------
+
 #ifndef HCTREE_HPP
 #define HCTREE_HPP
 
