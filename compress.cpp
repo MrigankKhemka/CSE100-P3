@@ -37,19 +37,21 @@ int main(int argc, char** argv) {
     ifstream infile;
     ofstream outfile;    
     infile.open(argv[1], ios::binary);
-    char nextChar;
+    unsigned char nextChar;
     int symbols = 0;
+    int totalBytes = 0;
     //Vector of ACSII values storing occurences 
     vector<int> freqs(256);
-    cout << "Reading from file: " << argv[1] << "... ";
-
+    cout << "Reading from file: " << argv[1] << endl;
     //Scans the entire file and stores the number of occurences for each
     //symbol in the vector
     while(1) {
       if (infile.is_open()) {
-        nextChar = (char)infile.get();
+        nextChar = infile.get();
         if(infile.eof()) break;
         if(!infile.good()) break;
+        //Counts total bytes in file to account for last byte
+        totalBytes++;
         for(int i = 0; i < freqs.size(); i++) {
           if(nextChar == i) {
             freqs[i]++;
@@ -72,7 +74,7 @@ int main(int argc, char** argv) {
 
     //Create huffman tree based on the number of occurences 
     HCTree huffman;
-    cout << "Building huff" << endl;
+    cout << "Building huffman tree" << endl;
     huffman.build(freqs); 
     cout << "Done" << endl;
     
@@ -87,19 +89,25 @@ int main(int argc, char** argv) {
     }
 
     //Reopen the input file
-    ifstream infile2;
-    infile2.open(argv[1], ios::binary);
+    infile.open(argv[1], ios::binary);
     BitOutputStream bitOut = BitOutputStream(outfile);
+
     //Scan through the entire file and encode bit by bit
-    while(1) {
-      if (infile2.is_open()) {
-        nextChar = (char)infile2.get();
-        if(infile2.eof()) break;
-        if(!infile2.good()) break;
+    cout << "Compressing..." << endl;
+    for(int i = 0; i < totalBytes; i++) {
+      if (infile.is_open()) {
+        nextChar = infile.get();
+        if(infile.eof()) break;
+        if(!infile.good()) break;
         huffman.encode(nextChar, bitOut);
       }
     }
+
+    //Manually flush the last incomplete byte
+    bitOut.flush();
+
     outfile.close();
-    infile2.close();
+    infile.close();
+    cout << "Done" << endl;
   }
 }

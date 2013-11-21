@@ -37,17 +37,19 @@ int main(int argc, char** argv) {
     ofstream outfile;    
     int frequency;
     int symbols = 0;
+    int totalBytes = 0;
     vector<int> freqs(256);
    
     //Read the compressed file's header and recreate the frequency vector 
     infile.open(argv[1], ios::binary);
-    cout << "Reading from file header: " << argv[1] << "... ";
+    cout << "Reading from file header: " << argv[1] << endl;
     if (infile.is_open() && infile.good()) {
       for(int i = 0; i < freqs.size(); i++) {
         infile >> frequency;
         freqs[i] = frequency;
         if(frequency > 0) {
           symbols++;
+          totalBytes += frequency;
         }
       } 
     }
@@ -61,7 +63,7 @@ int main(int argc, char** argv) {
 
     //Rebuild huffman tree
     HCTree huffman;
-    cout << "Building huff" << endl;
+    cout << "Building huffman tree" << endl;
     huffman.build(freqs); 
     cout << "Done" << endl;
    
@@ -69,14 +71,17 @@ int main(int argc, char** argv) {
     //Then write the characters to the outfile specified in argument 2.
     outfile.open(argv[2], ios::binary);
     BitInputStream bitInput = BitInputStream(infile);
-    while(1) {
+
+    cout << "Uncompressing..." << endl;
+    for(int i = 0; i < totalBytes; i++) {
       if(infile.is_open()) {
-      if(!infile.good()) break;
-      if(infile.eof()) break;
+        if(!infile.good()) break;
+        if(infile.eof()) break;
         outfile << (char)huffman.decode(bitInput);
       }
     }
 
+    cout << "Done" << endl;
     outfile.close();
     infile.close();
   }

@@ -29,13 +29,13 @@ void HCTree::build(const vector<int>& freqs)
     if (freqs[i] > 0) {
       HCNode* nodep = new HCNode(freqs[i],i);
       leaves[i] = nodep;
-      pq.push(nodep);
+      pq.push(leaves[i]);
     } 
   }
   
   //Constructing the tree from the priority queue
   while(pq.size() > 1) {
-    cout << pq.size() << endl;
+    //cout << pq.size() << endl;
     //Highest priority
     HCNode* p1 = pq.top();
     pq.pop();
